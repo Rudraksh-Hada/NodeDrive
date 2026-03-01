@@ -1,0 +1,678 @@
+:root {
+  --bg-base: #0f172a;
+  /* slate-900 */
+  --bg-panel: #1e293b;
+  /* slate-800 */
+  --bg-elevated: #334155;
+  /* slate-700 */
+
+  --primary: #f8fafc;
+  /* slate-50 */
+  --secondary: #94a3b8;
+  /* slate-400 */
+
+  --accent: #3b82f6;
+  /* blue-500 */
+  --accent-hover: #2563eb;
+  /* blue-600 */
+
+  --success: #22c55e;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --emergency: #8b5cf6;
+  /* Purple for emergency */
+
+  /* Glassmorphism */
+  --glass-bg: rgba(15, 23, 42, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+  --brand-font: 'Outfit', sans-serif;
+  --display-font: 'Rajdhani', sans-serif;
+  --mono-font: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+body.light-mode {
+  --bg-base: #f8fafc;
+  /* slate-50 */
+  --bg-panel: #ffffff;
+  --bg-elevated: #f1f5f9;
+  /* slate-100 */
+
+  --primary: #0f172a;
+  /* slate-900 */
+  --secondary: #475569;
+  /* slate-600 */
+
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--brand-font);
+  background-color: var(--bg-base);
+  color: var(--primary);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+#app,
+#appContainer {
+  width: 100%;
+  height: 100%;
+}
+
+.locate-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: background 0.2s, transform 0.2s;
+  z-index: 100;
+}
+
+.locate-button:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+}
+
+.crosshair-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30px;
+  height: 30px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.crosshair-overlay::before,
+.crosshair-overlay::after {
+  content: '';
+  position: absolute;
+  background-color: var(--accent);
+}
+
+.crosshair-overlay::before {
+  width: 2px;
+  height: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.crosshair-overlay::after {
+  width: 100%;
+  height: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* =========================================
+   LOGIN SCREEN
+   ========================================= */
+#loginPage {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, var(--bg-panel) 0%, var(--bg-base) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loginBox {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.app-logo-large {
+  width: 120px;
+  height: auto;
+  margin-bottom: 20px;
+  object-fit: contain;
+  /* Adds a subtle glow if it's a white wireframe */
+  filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.4));
+}
+
+.heading1 {
+  font-family: var(--display-font);
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 5px;
+  letter-spacing: 0.05em;
+}
+
+.loginBox p {
+  color: var(--secondary);
+  margin-bottom: 30px;
+  font-size: 14px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: var(--primary);
+  font-family: var(--brand-font);
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 0;
+}
+
+.input-field:focus {
+  border-color: var(--accent);
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 12px 24px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--brand-font);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================
+   APP CONTAINER (Map & HUD)
+   ========================================= */
+#appContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  /* Was 10 previously, lowering to prevent covering if issues exist, but ensuring it's above base */
+  background: var(--bg-base);
+}
+
+/* =========================================
+   HUD: TOP NAV
+   ========================================= */
+#topNav {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  height: 60px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  box-shadow: var(--glass-shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  z-index: 100;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-logo-small {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
+}
+
+.brand-text {
+  font-family: var(--display-font);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.nav-center {
+  font-family: var(--mono-font);
+  color: var(--secondary);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.user-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+}
+
+/* =========================================
+   HUD: SIDE PANEL
+   ========================================= */
+#sidePanel {
+  position: absolute;
+  top: 100px;
+  right: 20px;
+  bottom: 20px;
+  width: 320px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  box-shadow: var(--glass-shadow);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-section {
+  padding: 20px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.panel-section:last-child {
+  border-bottom: none;
+}
+
+.section-title {
+  font-family: var(--mono-font);
+  color: var(--secondary);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  text-transform: uppercase;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.metric-tile {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+
+.metric-val {
+  font-family: var(--display-font);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.metric-label {
+  font-family: var(--mono-font);
+  font-size: 10px;
+  color: var(--secondary);
+  margin-top: 4px;
+}
+
+.text-accent {
+  color: var(--accent);
+}
+
+.text-danger {
+  color: var(--danger);
+}
+
+.text-warning {
+  color: var(--warning);
+}
+
+/* Alerts Feed */
+#alertList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+.alert-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  font-size: 13px;
+  border-left: 3px solid transparent;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.alert-item i {
+  font-size: 16px;
+}
+
+.alert-item.danger {
+  border-left-color: var(--danger);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.alert-item.danger i {
+  color: var(--danger);
+}
+
+.alert-item.warning {
+  border-left-color: var(--warning);
+  background: rgba(245, 158, 11, 0.05);
+}
+
+.alert-item.warning i {
+  color: var(--warning);
+}
+
+.alert-item.emergency {
+  border-left-color: var(--emergency);
+  background: rgba(139, 92, 246, 0.05);
+}
+
+.alert-item.emergency i {
+  color: var(--emergency);
+}
+
+.empty-state {
+  color: var(--secondary);
+  font-size: 12px;
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+}
+
+/* =========================================
+   LEAFLET OVERRIDES
+   ========================================= */
+.leaflet-popup-content-wrapper {
+  background: var(--bg-panel);
+  color: var(--primary);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  font-family: var(--brand-font);
+}
+
+.leaflet-popup-tip {
+  background: var(--bg-panel);
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  color: var(--secondary);
+}
+
+/* =========================================
+   OVERLAYS (Settings & Hazard)
+   ========================================= */
+.overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.85);
+  /* 85% translucent */
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+}
+
+body.light-mode .overlay {
+  background: rgba(248, 250, 252, 0.85);
+}
+
+.overlay.active {
+  display: flex;
+}
+
+.overlay-content {
+  background: var(--bg-panel);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: var(--glass-shadow);
+  animation: slideIn 0.3s ease-out;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-family: var(--display-font);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.modal-header button {
+  background: none;
+  border: none;
+  color: var(--secondary);
+  font-size: 24px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.modal-header button:hover {
+  color: var(--danger);
+}
+
+/* =========================================
+   TOAST
+   ========================================= */
+.toast {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--bg-elevated);
+  border: 1px solid var(--glass-border);
+  color: var(--primary);
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 3000;
+  opacity: 0;
+  transition: all 0.3s ease-out;
+  box-shadow: var(--glass-shadow);
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* =========================================
+   CROSSHAIR TOOL (Location Coordinator)
+   ========================================= */
+
+/* Button to toggle crosshairs (Bottom Left) */
+.locate-btn {
+  position: absolute;
+  bottom: 80px;
+  /* offset to avoid Leaflet zoom controls */
+  left: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: var(--glass-shadow);
+  transition: all 0.2s;
+}
+
+.locate-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--accent);
+}
+
+.locate-btn.active {
+  background: var(--accent);
+  color: white;
+}
+
+/* Container spanning the whole screen, ignoring clicks */
+.crosshair-container {
+  display: none;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Crucial: allows clicking map underneath */
+  z-index: 1000;
+}
+
+.crosshair-container.active {
+  display: block;
+}
+
+/* The horizontal span line */
+.crosshair-h {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.6;
+}
+
+/* The vertical span line */
+.crosshair-v {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 100%;
+  background: var(--accent);
+  opacity: 0.6;
+}
+
+/* Coordinates display under the crosshair center */
+.coords-display {
+  display: none;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-family: var(--mono-font);
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--accent);
+  z-index: 1001;
+  pointer-events: none;
+  box-shadow: var(--glass-shadow);
+}
+
+.coords-display.active {
+  display: block;
+}
