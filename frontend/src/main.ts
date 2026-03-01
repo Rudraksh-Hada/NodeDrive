@@ -459,8 +459,13 @@ document.getElementById("submitReportBtn")!.addEventListener("click", async () =
 // ============================================================
 // Sets up continuous two-way link to the Python Server
 // We define a fallback localhost string for local testing,
-// but read from process environment variables if hosted on Vercel/Netlify
-const WS_BASE = import.meta.env.VITE_WS_URL || "ws://127.0.0.1:8000"
+// but read from process environment variables if hosted on Vercel/Render
+let WS_BASE = import.meta.env.VITE_WS_URL || "ws://127.0.0.1:8000"
+if (WS_BASE.startsWith("https")) {
+  WS_BASE = WS_BASE.replace("https", "wss")
+} else if (WS_BASE.startsWith("http")) {
+  WS_BASE = WS_BASE.replace("http", "ws")
+}
 
 function initWebSocket() {
   const navStatus = document.getElementById("navStatus")!

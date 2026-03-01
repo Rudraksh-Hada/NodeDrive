@@ -1,0 +1,46 @@
+services:
+  # 1. The FastAPI Backend Web Server
+  - type: web
+    name: nodedrive-api
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+
+  # 2. The Traffic Physics Simulator Engine
+  - type: worker
+    name: nodedrive-simulator
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: python simulator.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: WS_URL
+        fromService:
+          type: web
+          name: nodedrive-api
+          envVarKey: RENDER_EXTERNAL_URL
+
+  # 3. The React/Vite Frontend Interface
+  - type: web
+    name: nodedrive-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: nodedrive-api
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: VITE_WS_URL
+        fromService:
+          type: web
+          name: nodedrive-api
+          envVarKey: RENDER_EXTERNAL_URL

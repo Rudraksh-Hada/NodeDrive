@@ -12,9 +12,10 @@ import os
 
 # WebSocket endpoint (FastAPI backend)
 # Uses the environment variable WS_URL provided by cloud platorms (like Render),
-# or falls back to localhost for local testing.
+# or falls back to localhost for local testing/single-container deployment.
 _env_ws = os.getenv("WS_URL")
-URI = f"{_env_ws}/ws/sim" if _env_ws else "ws://localhost:8000/ws/sim"
+_port = os.getenv("PORT", "8000")
+URI = f"{_env_ws}/ws/sim" if _env_ws else f"ws://127.0.0.1:{_port}/ws/sim"
 # Note: If the cloud WS_URL starts with 'https', replace it with 'wss'
 if URI.startswith("https"):
     URI = URI.replace("https", "wss")
@@ -107,6 +108,8 @@ def create_crossroad_vehicle(vehicle_type="car", is_user=False, force_dir=None):
 # ==========================================================
 
 async def simulate():
+    print("⏳ Simulator waiting 5 seconds for FastAPI server to boot...")
+    await asyncio.sleep(5)
 
     vehicles = []
 
@@ -294,8 +297,8 @@ async def simulate():
                     await asyncio.sleep(0.4)
 
         except Exception as e:
-            print("⚠ Server disconnected. Reconnecting in 2 seconds...", e)
-            await asyncio.sleep(2)
+            print("⚠ Server disconnected. Reconnecting in 5 seconds...", e)
+            await asyncio.sleep(5)
 
 
 # ==========================================================
